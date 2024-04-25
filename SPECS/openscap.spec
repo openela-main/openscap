@@ -1,12 +1,11 @@
 Name:                 openscap
-Version:              1.3.8
-Release:              1%{?dist}.openela.1.0
+Version:              1.3.10
+Release:              2%{?dist}.openela.1.0
 Epoch:                1
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 License:              LGPLv2+
 URL:                  http://www.open-scap.org/
 Source0:              https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:               openscap-1.3.9-PR-1996-fix-sysctl-offline.patch
 BuildRequires:        make
 BuildRequires:        cmake >= 2.6
 BuildRequires:        gcc
@@ -26,6 +25,7 @@ BuildRequires:        glib2-devel
 BuildRequires:        dbus-devel
 BuildRequires:        libyaml-devel
 BuildRequires:        xmlsec1-devel xmlsec1-openssl-devel
+
 Patch1:               0001-Add-OpenELA-8-and-9-support.patch
 %if %{?_with_check:1}%{!?_with_check:0}
 BuildRequires:        perl-XML-XPath
@@ -125,6 +125,7 @@ for developing applications that use %{name}-engine-sce.
     -DENABLE_PERL=OFF \
     -DENABLE_OSCAP_UTIL_DOCKER=OFF \
     -DENABLE_OSCAP_REMEDIATE_SERVICE=OFF \
+    -DOPENSCAP_PROBE_LINUX_DPKGINFO=OFF \
     -DOPENSCAP_PROBE_UNIX_GCONF=OFF \
     -DOPENSCAP_ENABLE_SHA1=OFF \
     -DOPENSCAP_ENABLE_MD5=OFF \
@@ -199,12 +200,22 @@ pathfix.py -i %{__python3} -p -n $RPM_BUILD_ROOT%{_bindir}/scap-as-rpm
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Fri Feb 09 2024 Release Engineering <releng@openela.org> - 1.3.8.openela.1.0
+* Thu Apr 25 2024 Release Engineering <releng@openela.org> - 1.3.10.openela.1.0
 - Add OpenELA to openscap
 
+* Mon Apr 08 2024 Jan Černý <jcerny@redhat.com> - 1:1.3.10-2
+- Explicitely disable dpkginfo probe
+
+* Tue Apr 02 2024 Jan Černý <jcerny@redhat.com> - 1:1.3.10-1
+- Rebase to the latest upstream version (RHEL-29172)
+- Fix OVAL results file name (RHEL-7050)
+- Add ability to define a limit of collected items (RHEL-4141)
+- Add ability to refine rules in autotailor (RHEL-1477)
+- Improve the formatting of Blueprint remediations (RHEL-1476)
+
 * Fri Jul 14 2023 Evgenii Kolesnikov <ekolesni@redhat.com> - 1.3.8-1
-- Upgrade to the latest upstream release (rhbz#2223356)
-- Fix systemd* probes unit enumeration (rhbz#2223981)
+- Upgrade to the latest upstream release (rhbz#2217442)
+- Fix systemd* probes unit enumeration (rhbz#2219532)
 
 * Fri Jan 27 2023 Jan Černý <jcerny@redhat.com> - 1:1.3.7-1
 - Upgrade to the latest upstream release (rhbz#2159286)
