@@ -1,12 +1,11 @@
 Name:                 openscap
-Version:              1.3.8
-Release:              1%{?dist}.openela.1.0
+Version:              1.3.10
+Release:              2%{?dist}.openela.1.0
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 Group:                System Environment/Libraries
 License:              LGPLv2+
 URL:                  http://www.open-scap.org/
 Source0:              https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:               openscap-1.3.9-PR-1996-fix-sysctl-offline.patch
 BuildRequires:        cmake >= 2.6
 BuildRequires:        swig libxml2-devel libxslt-devel perl-generators perl-XML-Parser
 BuildRequires:        rpm-devel
@@ -24,6 +23,7 @@ BuildRequires:        glib2-devel
 BuildRequires:        dbus-devel
 BuildRequires:        libyaml-devel
 BuildRequires:        xmlsec1-devel xmlsec1-openssl-devel
+
 Patch1:               0001-Add-OpenELA-8-and-9-support.patch
 %if %{?_with_check:1}%{!?_with_check:0}
 BuildRequires:        perl-XML-XPath
@@ -140,6 +140,7 @@ cd build
         -DENABLE_OSCAP_UTIL_PODMAN=ON \
         -DENABLE_OSCAP_UTIL_VM=ON \
         -DENABLE_OSCAP_REMEDIATE_SERVICE=OFF \
+        -DOPENSCAP_PROBE_LINUX_DPKGINFO=OFF \
         ..
 make %{?_smp_mflags}
 make docs
@@ -217,12 +218,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Fri Feb 09 2024 Release Engineering <releng@openela.org> - 1.3.8.openela.1.0
+* Thu Apr 25 2024 Release Engineering <releng@openela.org> - 1.3.10.openela.1.0
 - Add OpenELA to openscap
 
+* Mon Apr 08 2024 Jan Černý <jcerny@redhat.com> - 1.3.10-2
+- Explicitely disable dpkginfo probe
+
+* Tue Apr 02 2024 Jan Černý <jcerny@redhat.com> - 1.3.10-1
+- Rebase to the latest upstream version (RHEL-31221)
+- Add ability to define a limit of collected items (RHEL-11925)
+- Add option --references that can select rules based on their reference (RHEL-1479)
+
 * Fri Jul 14 2023 Evgenii Kolesnikov <ekolesni@redhat.com> - 1.3.8-1
-- Upgrade to the latest upstream release (rhbz#2222864)
-- Fix systemd* probes unit enumeration (rhbz#2223547)
+- Upgrade to the latest upstream release (rhbz#2217441)
+- Add offline support for sysctl probe (rhbz#2185791)
+- Fix systemd* probes unit enumeration (rhbz#2219533)
 
 * Fri Jan 27 2023 Jan Černý <jcerny@redhat.com> - 1.3.7-1
 - Upgrade to the latest upstream release (rhbz#2159290)
