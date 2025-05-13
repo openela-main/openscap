@@ -1,6 +1,6 @@
 Name:                 openscap
-Version:              1.3.10
-Release:              2%{?dist}.openela.1.0
+Version:              1.3.11
+Release:              1%{?dist}.openela.1.0
 Epoch:                1
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 License:              LGPLv2+
@@ -194,14 +194,24 @@ pathfix.py -i %{__python3} -p -n $RPM_BUILD_ROOT%{_bindir}/scap-as-rpm
 %{_bindir}/scap-as-rpm
 %{_mandir}/man8/autotailor.8.gz
 %{_bindir}/autotailor
+%{_mandir}/man8/oscap-im.8.gz
+%{_bindir}/oscap-im
 
 %files engine-sce
 %{_libdir}/libopenscap_sce.so.*
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Thu Apr 25 2024 Release Engineering <releng@openela.org> - 1.3.10.openela.1.0
+* Tue May 13 2025 Release Engineering <releng@openela.org> - 1.3.11.openela.1.0
 - Add OpenELA to openscap
+
+* Mon Feb 10 2025 Jan Černý <jcerny@redhat.com> - 1:1.3.11-1
+- Upgrade to the latest upstream release (RHEL-76355)
+- Introduce "oscap-im", a tool for building hardened bootable container images
+- Fix RPM probes in bootable container images build environment (RHEL-55251)
+
+* Wed Aug 07 2024 Milan Lysonek <mlysonek@redhat.com> - 1:1.3.10-3
+- Switch gating to tmt plan (RHEL-43241)
 
 * Mon Apr 08 2024 Jan Černý <jcerny@redhat.com> - 1:1.3.10-2
 - Explicitely disable dpkginfo probe
