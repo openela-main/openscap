@@ -1,11 +1,14 @@
 Name:                 openscap
-Version:              1.3.10
+Version:              1.3.12
 Release:              2%{?dist}.openela.1.0
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 Group:                System Environment/Libraries
 License:              LGPLv2+
 URL:                  http://www.open-scap.org/
 Source0:              https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Patch0:               2218.patch
+Patch1:               2224.patch
+Patch2:               2233.patch
 BuildRequires:        cmake >= 2.6
 BuildRequires:        swig libxml2-devel libxslt-devel perl-generators perl-XML-Parser
 BuildRequires:        rpm-devel
@@ -23,8 +26,7 @@ BuildRequires:        glib2-devel
 BuildRequires:        dbus-devel
 BuildRequires:        libyaml-devel
 BuildRequires:        xmlsec1-devel xmlsec1-openssl-devel
-
-Patch1:               0001-Add-OpenELA-8-and-9-support.patch
+Patch3:               0001-Add-OpenELA-8-and-9-support.patch
 %if %{?_with_check:1}%{!?_with_check:0}
 BuildRequires:        perl-XML-XPath
 BuildRequires:        bzip2
@@ -136,6 +138,7 @@ cd build
 %cmake -DENABLE_PERL=OFF \
         -DENABLE_DOCS=ON \
         -DENABLE_OSCAP_UTIL_DOCKER=OFF \
+        -DENABLE_OSCAP_UTIL_IM=OFF \
         -DENABLE_OSCAP_UTIL_CHROOT=ON \
         -DENABLE_OSCAP_UTIL_PODMAN=ON \
         -DENABLE_OSCAP_UTIL_VM=ON \
@@ -218,8 +221,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Thu Apr 25 2024 Release Engineering <releng@openela.org> - 1.3.10.openela.1.0
+* Mon May 19 2025 Release Engineering <releng@openela.org> - 1.3.12.openela.1.0
 - Add OpenELA to openscap
+
+* Mon May 05 2025 Evgenii Kolesnikov <ekolesni@redhat.com> - 1:1.3.12-2
+- Initialize tmt (RHEL-43240)
+
+* Fri Apr 25 2025 Evgenii Kolesnikov <ekolesni@redhat.com> - 1:1.3.12-1
+- Upgrade to the latest upstream release (RHEL-88842)
+- Fix error when tailoring DISA content (RHEL-34104)
+- Fix OSCAP_PROBE_IGNORE_PATHS handling (RHEL-67297)
+
+* Wed Aug 07 2024 Milan Lysonek <mlysonek@redhat.com> - 1.3.10-3
+- Switch gating to tmt plan (RHEL-43240)
 
 * Mon Apr 08 2024 Jan Černý <jcerny@redhat.com> - 1.3.10-2
 - Explicitely disable dpkginfo probe
