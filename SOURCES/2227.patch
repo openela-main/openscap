@@ -1,0 +1,103 @@
+From 2b5cd91842e49d2cc6552bc46d2677fdb7f65c10 Mon Sep 17 00:00:00 2001
+From: Evgeny Kolesnikov <ekolesni@redhat.com>
+Date: Thu, 17 Apr 2025 14:02:55 +0200
+Subject: [PATCH] Inherit opscap environment when executing Bash remediations
+ with --remediate
+
+Make the Bash remediation environment consistent with other
+types of remediation.
+---
+ src/XCCDF_POLICY/xccdf_policy_remediate.c     | 14 ++-----------
+ tests/API/XCCDF/unittests/CMakeLists.txt      |  1 +
+ .../unittests/test_remediation_environment.sh | 21 +++++++++++++++++++
+ .../test_remediation_environment.xccdf.xml    | 16 ++++++++++++++
+ 4 files changed, 40 insertions(+), 12 deletions(-)
+ create mode 100755 tests/API/XCCDF/unittests/test_remediation_environment.sh
+ create mode 100644 tests/API/XCCDF/unittests/test_remediation_environment.xccdf.xml
+
+diff --git a/src/XCCDF_POLICY/xccdf_policy_remediate.c b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+index b435f89e5a..d2e5ef31ca 100644
+--- a/src/XCCDF_POLICY/xccdf_policy_remediate.c
++++ b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+@@ -483,18 +483,8 @@ static inline int _xccdf_fix_execute(struct xccdf_rule_result *rr, struct xccdf_
+ 				NULL
+ 			};
+ 
+-			char *oscap_bootc_build = getenv("OSCAP_BOOTC_BUILD");
+-			char *oscap_bootc_build_kvarg = NULL;
+-			if (oscap_bootc_build != NULL) {
+-				oscap_bootc_build_kvarg = oscap_sprintf("OSCAP_BOOTC_BUILD=%s", oscap_bootc_build);
+-			}
+-			char *const envp[3] = {
+-				"PATH=/bin:/sbin:/usr/bin:/usr/sbin",
+-				oscap_bootc_build_kvarg,
+-				NULL
+-			};
+-
+-			execve(interpret, argvp, envp);
++			// We are inheriting openscap environment
++			execve(interpret, argvp, environ);
+ 			/* Wow, execve returned. In this special case, we failed to execute the fix
+ 			 * and we return 0 from function. At least the following error message will
+ 			 * indicate the problem in xccdf:message. */
+diff --git a/tests/API/XCCDF/unittests/CMakeLists.txt b/tests/API/XCCDF/unittests/CMakeLists.txt
+index 6b557d0837..d22b370e2d 100644
+--- a/tests/API/XCCDF/unittests/CMakeLists.txt
++++ b/tests/API/XCCDF/unittests/CMakeLists.txt
+@@ -94,6 +94,7 @@ add_oscap_test("test_remediation_cdata.sh")
+ add_oscap_test("test_remediation_subs_unresolved.sh")
+ add_oscap_test("test_remediation_fix_without_system.sh")
+ add_oscap_test("test_remediation_invalid_characters.sh")
++add_oscap_test("test_remediation_environment.sh")
+ add_oscap_test("test_remediate_simple.sh")
+ add_oscap_test("test_remediate_perl.sh")
+ add_oscap_test("test_report_check_with_empty_selector.sh")
+diff --git a/tests/API/XCCDF/unittests/test_remediation_environment.sh b/tests/API/XCCDF/unittests/test_remediation_environment.sh
+new file mode 100755
+index 0000000000..1f5fd0afbf
+--- /dev/null
++++ b/tests/API/XCCDF/unittests/test_remediation_environment.sh
+@@ -0,0 +1,21 @@
++#!/usr/bin/env bash
++. $builddir/tests/test_common.sh
++
++set -e
++set -o pipefail
++
++name=$(basename $0 .sh)
++result=$(mktemp -t ${name}.out.XXXXXX)
++
++rm -f remediation.env
++
++CANARY_EXPORTED="CANARY_EXPORTED_VALUE"
++export CANARY_EXPORTED
++CANARY_PROCESS="CANARY_PROCESS_VALUE" $OSCAP xccdf eval --remediate $srcdir/${name}.xccdf.xml || true
++
++grep -q "${PATH}" remediation.env || die "PATH not found"
++grep -q "CANARY_EXPORTED_VALUE" remediation.env || die "CANARY_EXPORTED_VALUE not found"
++grep -q "CANARY_PROCESS_VALUE" remediation.env || die "CANARY_PROCESS_VALUE not found"
++
++rm -f remediation.env
++rm $result
+diff --git a/tests/API/XCCDF/unittests/test_remediation_environment.xccdf.xml b/tests/API/XCCDF/unittests/test_remediation_environment.xccdf.xml
+new file mode 100644
+index 0000000000..0875b6c241
+--- /dev/null
++++ b/tests/API/XCCDF/unittests/test_remediation_environment.xccdf.xml
+@@ -0,0 +1,16 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_moc.elpmaxe.www_benchmark_test">
++  <status>accepted</status>
++  <version>1.0</version>
++  <Rule selected="true" id="xccdf_moc.elpmaxe.www_rule_1">
++    <title>Write some environment variables</title>
++    <fix system="urn:xccdf:fix:script:sh">
++        echo "PATH=${PATH}" > remediation.env
++        echo "CANARY_EXPORTED=${CANARY_EXPORTED}" >> remediation.env
++        echo "CANARY_PROCESS=${CANARY_PROCESS}" >> remediation.env
++    </fix>
++    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
++      <check-content-ref href="test_remediation_simple.oval.xml" name="oval:moc.elpmaxe.www:def:1"/>
++    </check>
++  </Rule>
++</Benchmark>
