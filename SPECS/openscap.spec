@@ -1,14 +1,12 @@
 Name:                 openscap
-Version:              1.3.12
+Version:              1.3.13
 Release:              1%{?dist}.openela.1.0
 Epoch:                1
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 License:              LGPLv2+
 URL:                  http://www.open-scap.org/
 Source0:              https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:               2218.patch
-Patch1:               2224.patch
-Patch2:               2233.patch
+Patch0:               2284.patch
 BuildRequires:        make
 BuildRequires:        cmake >= 2.6
 BuildRequires:        gcc
@@ -28,7 +26,7 @@ BuildRequires:        glib2-devel
 BuildRequires:        dbus-devel
 BuildRequires:        libyaml-devel
 BuildRequires:        xmlsec1-devel xmlsec1-openssl-devel
-Patch3:               0001-Add-OpenELA-8-and-9-support.patch
+Patch1:               0001-Add-OpenELA-8-and-9-support.patch
 %if %{?_with_check:1}%{!?_with_check:0}
 BuildRequires:        perl-XML-XPath
 BuildRequires:        bzip2
@@ -204,8 +202,13 @@ pathfix.py -i %{__python3} -p -n $RPM_BUILD_ROOT%{_bindir}/scap-as-rpm
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Mon May 19 2025 Release Engineering <releng@openela.org> - 1.3.12.openela.1.0
+* Thu Jan 08 2026 Release Engineering <releng@openela.org> - 1.3.13.openela.1.0
 - Add OpenELA to openscap
+
+* Mon Dec 08 2025 Matthew Burket <mburket@redhat.com> - 1:1.3.13-1
+- Upgrade to the latest upstream release (RHEL-133976)
+- Fix Filepath and Pattern Fields inversion (RHEL-104073)
+- Fix verbose flag (RHEL-53859)
 
 * Fri Apr 25 2025 Evgenii Kolesnikov <ekolesni@redhat.com> - 1:1.3.12-1
 - Upgrade to the latest upstream release (RHEL-88413)
