@@ -1,0 +1,45 @@
+From 6767362e139bf1e8981e1f1138e38cad359e4182 Mon Sep 17 00:00:00 2001
+From: Matthew Burket <mburket@redhat.com>
+Date: Fri, 5 Dec 2025 09:12:43 -0600
+Subject: [PATCH] Always check the current lists before inserting on blueprints
+
+Fixes OpenSCAP#2282
+---
+ src/XCCDF_POLICY/xccdf_policy_remediate.c              |  2 +-
+ .../unittests/test_remediation_blueprint.xccdf.xml     | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/src/XCCDF_POLICY/xccdf_policy_remediate.c b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+index 0f6c21c4ee..5e4a0b1116 100644
+--- a/src/XCCDF_POLICY/xccdf_policy_remediate.c
++++ b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+@@ -742,7 +742,7 @@ static inline int _parse_blueprint_fix(const char *fix_text, struct blueprint_cu
+ 			memcpy(val, &fix_text[ovector[2]], ovector[3] - ovector[2]);
+ 			val[ovector[3] - ovector[2]] = '\0';
+ 
+-			if (!oscap_list_contains(customizations->kernel_append, val, (oscap_cmp_func) oscap_streq)) {
++			if (!oscap_list_contains(tab[i].list, val, (oscap_cmp_func) oscap_streq)) {
+ 				oscap_list_prepend(tab[i].list, val);
+ 			} else {
+ 				free(val);
+diff --git a/tests/API/XCCDF/unittests/test_remediation_blueprint.xccdf.xml b/tests/API/XCCDF/unittests/test_remediation_blueprint.xccdf.xml
+index 2fc909795b..de3b8468a8 100644
+--- a/tests/API/XCCDF/unittests/test_remediation_blueprint.xccdf.xml
++++ b/tests/API/XCCDF/unittests/test_remediation_blueprint.xccdf.xml
+@@ -104,6 +104,16 @@ enabled = ["sshd"]
+     <fix system="urn:redhat:osbuild:blueprint">
+ [customizations.services]
+ masked = ["evil"]
++</fix>
++    <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
++      <check-content-ref href="test_remediation_simple.oval.xml" name="oval:moc.elpmaxe.www:def:1"/>
++    </check>
++  </Rule>
++ <Rule selected="true" id="xccdf_moc.elpmaxe.www_rule_11">
++    <title>Enable sshd</title>
++    <fix system="urn:redhat:osbuild:blueprint">
++[customizations.services]
++enabled = ["sshd"]
+ </fix>
+     <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+       <check-content-ref href="test_remediation_simple.oval.xml" name="oval:moc.elpmaxe.www:def:1"/>

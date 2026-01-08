@@ -1,5 +1,5 @@
 Name:           openscap
-Version:        1.4.2
+Version:        1.4.3
 Release:        1%{?dist}
 Epoch:          1
 Summary:        Set of open source libraries enabling integration of the SCAP line of standards
@@ -7,7 +7,7 @@ License:        LGPL-2.1-or-later
 URL:            http://www.open-scap.org/
 VCS:            https://github.com/OpenSCAP/openscap
 Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:         2227.patch
+Patch0:         2283.patch
 
 %global         common_description %{expand:
 OpenSCAP is a set of open source libraries providing an easier path
@@ -158,6 +158,10 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %changelog
+* Mon Dec 08 2025 Matthew Burket <mburket@redhat.com> - 1:1.4.3-1
+- Upgrade to the latest upstream release (RHEL-133978)
+- Add the ability to show rule details in output (RHEL-104651)
+
 * Fri Apr 25 2025 Evgenii Kolesnikov <ekolesni@redhat.com> - 1:1.4.2-1
 - Upgrade to the latest upstream release (RHEL-88845)
 
