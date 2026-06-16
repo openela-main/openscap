@@ -1,12 +1,11 @@
 Name:                 openscap
-Version:              1.3.13
+Version:              1.3.14
 Release:              1%{?dist}.openela.1.0
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 Group:                System Environment/Libraries
 License:              LGPLv2+
 URL:                  http://www.open-scap.org/
 Source0:              https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-Patch0:               2284.patch
 BuildRequires:        cmake >= 2.6
 BuildRequires:        swig libxml2-devel libxslt-devel perl-generators perl-XML-Parser
 BuildRequires:        rpm-devel
@@ -24,6 +23,7 @@ BuildRequires:        glib2-devel
 BuildRequires:        dbus-devel
 BuildRequires:        libyaml-devel
 BuildRequires:        xmlsec1-devel xmlsec1-openssl-devel
+
 Patch1:               0001-Add-OpenELA-8-and-9-support.patch
 %if %{?_with_check:1}%{!?_with_check:0}
 BuildRequires:        perl-XML-XPath
@@ -219,8 +219,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Thu Jan 08 2026 Release Engineering <releng@openela.org> - 1.3.13.openela.1.0
+* Tue Jun 16 2026 Release Engineering <releng@openela.org> - 1.3.14.openela.1.0
 - Add OpenELA to openscap
+
+* Thu Apr 09 2026 Matthew Burket <mburket@redhat.com> - 1.3.14-1
+- Rebase to the latest upstream version (RHEL-161761)
 
 * Mon Dec 08 2025 Matthew Burket <mburket@redhat.com> - 1.3.13-1
 - Rebase to the latest upstream version (RHEL-133977)
