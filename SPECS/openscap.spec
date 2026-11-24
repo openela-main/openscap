@@ -1,5 +1,5 @@
 Name:           openscap
-Version:        1.4.4
+Version:        1.4.6
 Release:        1%{?dist}
 Epoch:          1
 Summary:        Set of open source libraries enabling integration of the SCAP line of standards
@@ -157,8 +157,14 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %changelog
-* Mon Apr 13 2026 Matthew Burket <mburket@redhat.com> - 1:1.4.4-1
-- Upgrade to the latest upstream release (RHEL-167941)
+* Fri Oct 23 2026 Jan Černý <jcerny@redhat.com> - 1:1.4.6-1
+- Rebase to OpenSCAP 1.4.6 [rhel-10.3.z] (RHEL-278217)
+- CVE-2026-85518: Fix path traversal when dumping SDS components
+
+* Thu Apr 09 2026 Matthew Burket <mburket@redhat.com> - 1:1.4.4-1
+- Upgrade to the latest upstream release (RHEL-161763)
+- Fix Bash completion (RHEL-145121)
+- Add ability to list rules and variables in a profile by the "oscap info" command (RHEL-143569)
 
 * Mon Dec 08 2025 Matthew Burket <mburket@redhat.com> - 1:1.4.3-1
 - Upgrade to the latest upstream release (RHEL-133978)
