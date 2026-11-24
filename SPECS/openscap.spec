@@ -1,5 +1,5 @@
 Name:                 openscap
-Version:              1.3.14
+Version:              1.3.16
 Release:              1%{?dist}.openela.1.0
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
 Group:                System Environment/Libraries
@@ -219,8 +219,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Tue Jun 16 2026 Release Engineering <releng@openela.org> - 1.3.14.openela.1.0
+* Tue Nov 24 2026 Release Engineering <releng@openela.org> - 1.3.16.openela.1.0
 - Add OpenELA to openscap
+
+* Fri Oct 23 2026 Jan Černý <jcerny@redhat.com> - 1.3.16-1
+- Rebase openscap to 1.3.16 [rhel-8.10.z] (RHEL-277478)
+- CVE-2026-85518: Fix path traversal when dumping SDS components
+- Honor the TMPDIR environment variable when creating temporary files (RHEL-222370)
+- Sanitize strings to prevent errors caused by invalid UTF-8 characters (RHEL-171005)
 
 * Thu Apr 09 2026 Matthew Burket <mburket@redhat.com> - 1.3.14-1
 - Rebase to the latest upstream version (RHEL-161761)
