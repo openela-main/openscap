@@ -1,5 +1,5 @@
 Name:                 openscap
-Version:              1.3.14
+Version:              1.3.16
 Release:              1%{?dist}.openela.1.0
 Epoch:                1
 Summary:              Set of open source libraries enabling integration of the SCAP line of standards
@@ -202,11 +202,15 @@ pathfix.py -i %{__python3} -p -n $RPM_BUILD_ROOT%{_bindir}/scap-as-rpm
 %{_bindir}/oscap-run-sce-script
 
 %changelog
-* Tue Jun 16 2026 Release Engineering <releng@openela.org> - 1.3.14.openela.1.0
+* Tue Nov 24 2026 Release Engineering <releng@openela.org> - 1.3.16.openela.1.0
 - Add OpenELA to openscap
 
-* Mon Apr 13 2026 Matthew Burket <mburket@redhat.com> - 1:1.3.14-1
-- Upgrade to the latest upstream release (RHEL-167949)
+* Fri Oct 23 2026 Jan Černý <jcerny@redhat.com> - 1:1.3.16-1
+- Rebase to openscap 1.3.16 [rhel-9.9.z] (RHEL-278223)
+- CVE-2026-85518: Fix path traversal when dumping SDS component
+
+* Thu Apr 09 2026 Matthew Burket <mburket@redhat.com> - 1:1.3.14-1
+- Upgrade to the latest upstream release (RHEL-161762)
 
 * Mon Dec 08 2025 Matthew Burket <mburket@redhat.com> - 1:1.3.13-1
 - Upgrade to the latest upstream release (RHEL-133976)
